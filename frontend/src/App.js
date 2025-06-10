@@ -43,6 +43,14 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route
+              path="/design/edit/new"
+              element={
+                <PrivateRoute>
+                  <DesignEditor />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </main>
       </div>

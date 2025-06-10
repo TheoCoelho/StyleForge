@@ -2,6 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { Excalidraw } from '@excalidraw/excalidraw'; // Não é usado nesta página
 import axios from 'axios'; // Para futuras chamadas à API
+import headSvg from '../assets/svg/head.svg';
+import torsoSvg from '../assets/svg/torso.svg';
+import legsSvg from '../assets/svg/legs.svg';
+
+// Estilos CSS para o SVG
+const svgStyles = `
+  .body-part {
+    transition: all 0.3s ease;
+  }
+  .body-part:hover {
+    filter: brightness(0.95);
+    transform: scale(1.02);
+  }
+  .body-part.selected {
+    filter: brightness(1.1);
+  }
+`;
+
+// Estilo global para hover
+const bodyPartHoverStyle = `
+  .body-part:hover {
+    transform: scale(1.08);
+    z-index: 10;
+  }
+`;
 
 const DesignCreator = () => {
   const navigate = useNavigate();
@@ -12,6 +37,8 @@ const DesignCreator = () => {
   const [clothingSubtypesData, setClothingSubtypesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Tooltip para mostrar o nome da parte ao passar o mouse
+  const [hoveredPart, setHoveredPart] = useState(null);
 
   // TODO: Substituir por chamada real à API no futuro
   const categories = [
@@ -111,36 +138,45 @@ const DesignCreator = () => {
       {/* Seção da Silhueta */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Selecione a Repartição</h2>
-        <div className="relative w-64 h-96 mx-auto bg-gray-200 rounded-full overflow-hidden shadow-inner">
-          <div className="absolute inset-0 flex flex-col">
-            {/* Cabeça */}
-            <div
-              className={`h-1/3 border-b-2 border-gray-300 flex items-center justify-center text-lg font-medium transition-colors duration-200 cursor-pointer ${
-                selectedCategory?.id === 'head' ? 'bg-blue-200 border-blue-500 text-blue-800' : 'hover:bg-gray-300 text-gray-600'
-              }`}
-              onClick={() => handleCategorySelect({ id: 'head', name: 'Cabeça' })}
-            >
-              Cabeça
+        <style>{svgStyles}</style>
+        <style>{bodyPartHoverStyle}</style>
+        <div className="relative w-full max-w-md h-[600px] mx-auto flex items-center justify-center">
+          {/* Cabeça */}
+          <img
+            src={headSvg}
+            alt="Cabeça"
+            className={`absolute left-1/2 -translate-x-1/2 origin-center transition-transform duration-200 ${selectedCategory?.id === 'head' ? 'opacity-100' : 'opacity-80'} body-part cursor-pointer`}
+            style={{ top: '0%', width: '100%', height: '28%' }}
+            onClick={() => handleCategorySelect({ id: 'head', name: 'Cabeça' })}
+            onMouseEnter={() => setHoveredPart('Cabeça')}
+            onMouseLeave={() => setHoveredPart(null)}
+          />
+          {/* Tronco */}
+          <img
+            src={torsoSvg}
+            alt="Tronco"
+            className={`absolute left-1/2 -translate-x-1/2 origin-center transition-transform duration-200 ${selectedCategory?.id === 'torso' ? 'opacity-100' : 'opacity-80'} body-part cursor-pointer`}
+            style={{ top: '22%', width: '100%', height: '38%' }}
+            onClick={() => handleCategorySelect({ id: 'torso', name: 'Tronco' })}
+            onMouseEnter={() => setHoveredPart('Tronco')}
+            onMouseLeave={() => setHoveredPart(null)}
+          />
+          {/* Pernas */}
+          <img
+            src={legsSvg}
+            alt="Pernas"
+            className={`absolute left-1/2 -translate-x-1/2 origin-center transition-transform duration-200 ${selectedCategory?.id === 'legs' ? 'opacity-100' : 'opacity-80'} body-part cursor-pointer`}
+            style={{ top: '54%', width: '100%', height: '46%' }}
+            onClick={() => handleCategorySelect({ id: 'legs', name: 'Pernas' })}
+            onMouseEnter={() => setHoveredPart('Pernas')}
+            onMouseLeave={() => setHoveredPart(null)}
+          />
+          {/* Tooltip */}
+          {hoveredPart && (
+            <div className="absolute left-1/2 -translate-x-1/2 top-2 bg-gray-900 text-white text-xs rounded px-3 py-1 shadow-lg pointer-events-none z-10 animate-fade-in">
+              {hoveredPart}
             </div>
-            {/* Tronco */}
-            <div
-              className={`h-1/3 border-b-2 border-gray-300 flex items-center justify-center text-lg font-medium transition-colors duration-200 cursor-pointer ${
-                selectedCategory?.id === 'torso' ? 'bg-blue-200 border-blue-500 text-blue-800' : 'hover:bg-gray-300 text-gray-600'
-              }`}
-              onClick={() => handleCategorySelect({ id: 'torso', name: 'Tronco' })}
-            >
-              Tronco
-            </div>
-            {/* Pernas */}
-            <div
-              className={`h-1/3 flex items-center justify-center text-lg font-medium transition-colors duration-200 cursor-pointer ${
-                selectedCategory?.id === 'legs' ? 'bg-blue-200 border-blue-500 text-blue-800' : 'hover:bg-gray-300 text-gray-600'
-              }`}
-              onClick={() => handleCategorySelect({ id: 'legs', name: 'Pernas' })}
-            >
-              Pernas
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -169,7 +205,7 @@ const DesignCreator = () => {
       )}
 
       {/* Seção Carrossel de Subtipos */}
-      {selectedType && filteredSubtypes.length > 0 && (
+      {selectedType && (
         <div className="mb-10">
           <h2 className="text-xl font-semibold text-gray-700 mb-4">Selecione o Subtipo ({selectedType.name})</h2>
           <div className="flex overflow-x-auto space-x-6 p-4 -m-4">
