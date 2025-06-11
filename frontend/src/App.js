@@ -12,7 +12,7 @@ import PrivateRoute from './components/PrivateRoute';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen" style={{ backgroundColor: '#ECECEA' }}>
         <Navbar />
         <main className="py-8">
           <Routes>

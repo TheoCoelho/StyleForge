@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { Excalidraw } from '@excalidraw/excalidraw'; // Não é usado nesta página
 import axios from 'axios'; // Para futuras chamadas à API
-import headSvg from '../assets/svg/head.svg';
-import torsoSvg from '../assets/svg/torso.svg';
-import legsSvg from '../assets/svg/legs.svg';
 
-// Estilos CSS para o SVG
-const svgStyles = `
+// Estilos CSS para as partes do corpo
+const bodyPartStyles = `
   .body-part {
     transition: all 0.3s ease;
+    background-color: #f0f0f0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
   }
   .body-part:hover {
-    filter: brightness(0.95);
-    transform: scale(1.02);
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+    z-index: 10;
   }
   .body-part.selected {
-    filter: brightness(1.1);
-  }
-`;
-
-// Estilo global para hover
-const bodyPartHoverStyle = `
-  .body-part:hover {
-    transform: scale(1.08);
-    z-index: 10;
+    background-color: #d0d0d0;
+    border-color: #999;
   }
 `;
 
@@ -138,35 +132,28 @@ const DesignCreator = () => {
       {/* Seção da Silhueta */}
       <div className="mb-10">
         <h2 className="text-xl font-semibold text-gray-700 mb-4">Selecione a Repartição</h2>
-        <style>{svgStyles}</style>
-        <style>{bodyPartHoverStyle}</style>
-        <div className="relative w-full max-w-md h-[600px] mx-auto flex items-center justify-center">
+        <style>{bodyPartStyles}</style>
+        <div className="relative w-full max-w-md h-[600px] mx-auto flex flex-col items-center justify-center gap-4">
           {/* Cabeça */}
-          <img
-            src={headSvg}
-            alt="Cabeça"
-            className={`absolute left-1/2 -translate-x-1/2 origin-center transition-transform duration-200 ${selectedCategory?.id === 'head' ? 'opacity-100' : 'opacity-80'} body-part cursor-pointer`}
-            style={{ top: '0%', width: '100%', height: '28%' }}
+          <div
+            className={`body-part ${selectedCategory?.id === 'head' ? 'selected' : ''}`}
+            style={{ width: '150px', height: '150px' }}
             onClick={() => handleCategorySelect({ id: 'head', name: 'Cabeça' })}
             onMouseEnter={() => setHoveredPart('Cabeça')}
             onMouseLeave={() => setHoveredPart(null)}
           />
           {/* Tronco */}
-          <img
-            src={torsoSvg}
-            alt="Tronco"
-            className={`absolute left-1/2 -translate-x-1/2 origin-center transition-transform duration-200 ${selectedCategory?.id === 'torso' ? 'opacity-100' : 'opacity-80'} body-part cursor-pointer`}
-            style={{ top: '22%', width: '100%', height: '38%' }}
+          <div
+            className={`body-part ${selectedCategory?.id === 'torso' ? 'selected' : ''}`}
+            style={{ width: '200px', height: '200px' }}
             onClick={() => handleCategorySelect({ id: 'torso', name: 'Tronco' })}
             onMouseEnter={() => setHoveredPart('Tronco')}
             onMouseLeave={() => setHoveredPart(null)}
           />
           {/* Pernas */}
-          <img
-            src={legsSvg}
-            alt="Pernas"
-            className={`absolute left-1/2 -translate-x-1/2 origin-center transition-transform duration-200 ${selectedCategory?.id === 'legs' ? 'opacity-100' : 'opacity-80'} body-part cursor-pointer`}
-            style={{ top: '54%', width: '100%', height: '46%' }}
+          <div
+            className={`body-part ${selectedCategory?.id === 'legs' ? 'selected' : ''}`}
+            style={{ width: '180px', height: '200px' }}
             onClick={() => handleCategorySelect({ id: 'legs', name: 'Pernas' })}
             onMouseEnter={() => setHoveredPart('Pernas')}
             onMouseLeave={() => setHoveredPart(null)}
